@@ -11,22 +11,14 @@ import UIKit
 class SuperMockURLProtocol: NSURLProtocol {
     
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
-        
-        if request.hasMock() {
-            return true
-        }
-        let helper = SuperMockResponseHelper.sharedHelper
-        if let regexes = helper.logSuppressionRegexes {
-            let results = regexes.flatMap({ regex -> [NSTextCheckingResult] in
-                let string = request.URL!.absoluteString
-                return regex.matchesInString(string, options: NSMatchingOptions.Anchored, range: NSMakeRange(0, string.characters.count))
-            })
+        let hasMock = request.hasMock()
+        let shouldLog = SuperMockConfig.sharedConfig.shouldLogURL(request.URL!, hasMock: hasMock)
+        let messagePrefix = hasMock ? "Requesting MOCK for" : "Passing Through WITHOUT MOCK"
+        let message = "\(messagePrefix) : \(request.URL)"
 
-            if results.count == 0 && helper.logUnmockedURLs {
-                print("Unmocked URL: \(request.URL)")
-            }
-        }
-        return false
+        if shouldLog { print(message) }
+
+        return hasMock
     }
     
     

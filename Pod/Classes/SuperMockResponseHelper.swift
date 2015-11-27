@@ -8,17 +8,9 @@
 
 import Foundation
 
-
-public class SuperMockResponseHelper: NSObject {
-
-    public static let sharedHelper = SuperMockResponseHelper()
-
-    public var logSuppressionRegexes: [NSRegularExpression]?
-
-    public var mockURLTransform: ((url: NSURL) -> (NSURL))?
-
-    public var logURLTransforms = false
-    public var logUnmockedURLs = true
+class SuperMockResponseHelper: NSObject {
+    
+    static let sharedHelper = SuperMockResponseHelper()
     
     class var bundleForMocks : NSBundle? {
         set {
@@ -62,10 +54,9 @@ public class SuperMockResponseHelper: NSObject {
         let definitionsPath = bundle.pathForResource("Mocks", ofType: "plist")
         if let definitions = NSDictionary(contentsOfFile: definitionsPath!) as? Dictionary<String,AnyObject>,
             let mocks = definitions["mocks"] as? Dictionary<String,AnyObject>,
-            let mimes = definitions["mimes"] as? Dictionary<String,String>
-        {
-                self.mocks = mocks
-                self.mimes = mimes
+            let mimes = definitions["mimes"] as? Dictionary<String,String> {
+            self.mocks = mocks
+            self.mimes = mimes
         }
     }
     
@@ -99,15 +90,10 @@ public class SuperMockResponseHelper: NSObject {
             return url
         }
 
+        let config = SuperMockConfig.sharedConfig
+        let trasformedURL: NSURL = config.URLTransform?(url:url) ?? url
 
-        let trasformedURL: NSURL
-        if let transform = mockURLTransform {
-            trasformedURL = transform(url: url)
-        } else {
-            trasformedURL = url
-        }
-
-        if logURLTransforms && (trasformedURL != url) {
+        if config.logURLTransforms && (trasformedURL != url) {
             print("IncomingURL: \(url) Transormed: \(trasformedURL)")
         }
 
