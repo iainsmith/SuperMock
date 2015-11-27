@@ -13,10 +13,19 @@ class SuperMockURLProtocol: NSURLProtocol {
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
         
         if request.hasMock() {
-            print("Requesting MOCK for : \(request.URL)")
             return true
         }
-        print("Passing Through WITHOUT MOCK : \(request.URL)")
+        let helper = SuperMockResponseHelper.sharedHelper
+        if let regexes = helper.logSuppressionRegexes {
+            let results = regexes.flatMap({ regex -> [NSTextCheckingResult] in
+                let string = request.URL!.absoluteString
+                return regex.matchesInString(string, options: NSMatchingOptions.Anchored, range: NSMakeRange(0, string.characters.count))
+            })
+
+            if results.count == 0 && helper.logUnmockedURLs {
+                print("Unmocked URL: \(request.URL)")
+            }
+        }
         return false
     }
     
