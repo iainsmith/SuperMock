@@ -87,7 +87,11 @@ class SuperMockResponseHelper: NSObject {
     
     private func mockURLForRequestURL(url: NSURL, requestMethod: RequestMethod, mocks: Dictionary<String,AnyObject>) -> NSURL? {
         guard let definitionsForMethod = mocks[requestMethod.rawValue] as? Dictionary<String,AnyObject> else {
-            return url
+            if SuperMockConfig.sharedConfig.useStrictMocks {
+                fatalError("Couldn't find definitions for request: \(requestMethod) make sure to create a node for it in the plist")
+            } else {
+                return url
+            }
         }
 
         let config = SuperMockConfig.sharedConfig

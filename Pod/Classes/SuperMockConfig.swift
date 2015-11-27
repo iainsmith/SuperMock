@@ -16,6 +16,8 @@ public class SuperMockConfig: NSObject {
     public var logUnmockedURLs = true
     public var logMockedURLs = true
 
+    public var useStrictMocks = false
+
     public var URLTransform: ((url: NSURL) -> (NSURL))?
 
     func shouldLogURL(url: NSURL, hasMock: Bool) -> Bool {
