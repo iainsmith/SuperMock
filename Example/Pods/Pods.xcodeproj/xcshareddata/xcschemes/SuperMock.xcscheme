@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '51BF1A6AB03A720272BAFB4F'
+               BlueprintIdentifier = '3BAF571F816A72E5FBA8374F'
                BlueprintName = 'SuperMock'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'SuperMock.framework'>

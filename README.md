@@ -36,7 +36,8 @@ SuperMock.beginMocking(appBundle)
 
 Your URL requests throughout your existing code base will begin to return Mocks!
 
-
+## Config
+Use `SuperMockConfig` to configure the behaviour of SuperMocks
 
 ## Requirements
 
