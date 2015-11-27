@@ -19,7 +19,7 @@ public class SuperMockResponseHelper: NSObject {
 
     public var logURLTransforms = false
     public var logUnmockedURLs = true
-    
+
     class var bundleForMocks : NSBundle? {
         set {
             sharedHelper.bundle = newValue
@@ -70,10 +70,9 @@ public class SuperMockResponseHelper: NSObject {
         if let definitionsPath = bundle.pathForResource("Mocks", ofType: "plist"),
             let definitions = NSDictionary(contentsOfFile: definitionsPath) as? Dictionary<String,AnyObject>,
             let mocks = definitions["mocks"] as? Dictionary<String,AnyObject>,
-            let mimes = definitions["mimes"] as? Dictionary<String,String>
-        {
-                self.mocks = mocks
-                self.mimes = mimes
+            let mimes = definitions["mimes"] as? Dictionary<String,String> {
+            self.mocks = mocks
+            self.mimes = mimes
         }
     }
     
@@ -115,6 +114,11 @@ public class SuperMockResponseHelper: NSObject {
         }
 
         if logURLTransforms && (trasformedURL != url) {
+
+        let config = SuperMockConfig.sharedConfig
+        let trasformedURL: NSURL = config.URLTransform?(url:url) ?? url
+
+        if config.logURLTransforms && (trasformedURL != url) {
             print("IncomingURL: \(url) Transormed: \(trasformedURL)")
         }
 
@@ -125,6 +129,7 @@ public class SuperMockResponseHelper: NSObject {
             } else if let responsePath = mockedResponseFilePath(url) {
                 return NSURL(fileURLWithPath: responsePath)
             }
+        }
         return url
     }
     
