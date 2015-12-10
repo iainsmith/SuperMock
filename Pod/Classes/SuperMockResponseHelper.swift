@@ -13,13 +13,6 @@ public class SuperMockResponseHelper: NSObject {
     public static let sharedHelper = SuperMockResponseHelper()
     let maxFileLegth = 30
 
-    public var logSuppressionRegexes: [NSRegularExpression]?
-
-    public var mockURLTransform: ((url: NSURL) -> (NSURL))?
-
-    public var logURLTransforms = false
-    public var logUnmockedURLs = true
-
     class var bundleForMocks : NSBundle? {
         set {
             sharedHelper.bundle = newValue
@@ -110,15 +103,6 @@ public class SuperMockResponseHelper: NSObject {
             }
         }
 
-        let trasformedURL: NSURL
-        if let transform = mockURLTransform {
-            trasformedURL = transform(url: url)
-        } else {
-            trasformedURL = url
-        }
-
-        if logURLTransforms && (trasformedURL != url) {
-
         let config = SuperMockConfig.sharedConfig
         let trasformedURL: NSURL = config.URLTransform?(url:url) ?? url
 
@@ -133,7 +117,7 @@ public class SuperMockResponseHelper: NSObject {
             } else if let responsePath = mockedResponseFilePath(url) {
                 return NSURL(fileURLWithPath: responsePath)
             }
-        }
+
         return url
     }
     
